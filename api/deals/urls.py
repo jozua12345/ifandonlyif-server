@@ -7,6 +7,8 @@ router = routers.DefaultRouter()
 router.register('deals', views.DealsView)
 router.register('clientusers', views.ClientUsersView)
 router.register('blacklists', views.BlackListsView)
+router.register('choices', views.ChoicesView)
+router.register('requests', views.RequestsView)
 urlpatterns = [
     path('', include(router.urls)),
 ]

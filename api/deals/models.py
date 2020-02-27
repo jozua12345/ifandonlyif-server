@@ -27,3 +27,17 @@ class BlackLists(models.Model):
 
     def __str__(self):
         return self.id
+
+class Choices(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+class Requests(models.Model):
+    clientuser= models.ForeignKey(ClientUsers, on_delete=models.CASCADE)
+    deal = models.ForeignKey(Deals, on_delete=models.CASCADE)
+    choices = models.ManyToManyField(Choices)
+
+    def __str__(self):
+        return self.id
