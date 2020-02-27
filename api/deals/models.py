@@ -12,3 +12,18 @@ class Deals(models.Model):
 
     def __str__(self):
         return self.name
+
+class ClientUsers(models.Model):
+    name = models.CharField(max_length=155)
+    uid  = models.CharField(max_length=155)
+
+    def __str__(self):
+        return self.uid
+
+class BlackLists(models.Model):
+    clientuser2= models.ForeignKey(ClientUsers, on_delete=models.CASCADE, related_name='clientuser2')
+    clientuser1= models.ForeignKey(ClientUsers, on_delete=models.CASCADE, related_name='clientuser1')
+    deal = models.ForeignKey(Deals, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.id
