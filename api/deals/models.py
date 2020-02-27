@@ -9,3 +9,6 @@ class Deals(models.Model):
     vendors = models.CharField(max_length=41)
     terms = models.CharField(max_length=4315)
     category = models.CharField(max_length=126)
+
+    def __str__(self):
+        return self.name
