@@ -21,6 +21,8 @@ class ClientUsers(models.Model):
         return self.uid
 
 class BlackLists(models.Model):
+    class Meta:
+        unique_together = ('clientuser2','clientuser1', 'deal')
     clientuser2= models.ForeignKey(ClientUsers, on_delete=models.CASCADE, related_name='clientuser2')
     clientuser1= models.ForeignKey(ClientUsers, on_delete=models.CASCADE, related_name='clientuser1')
     deal = models.ForeignKey(Deals, on_delete=models.CASCADE)
@@ -35,6 +37,8 @@ class Choices(models.Model):
         return self.name
 
 class Requests(models.Model):
+    class Meta:
+        unique_together = ('clientuser', 'deal')
     clientuser= models.ForeignKey(ClientUsers, on_delete=models.CASCADE)
     deal = models.ForeignKey(Deals, on_delete=models.CASCADE)
     choices = models.ManyToManyField(Choices)
