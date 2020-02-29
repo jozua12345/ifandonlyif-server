@@ -13,5 +13,12 @@ router.register('requests', views.RequestsView)
 urlpatterns = [
     path('', include(router.urls)),
     path('getAllDeals/', api.getAllDeals),
-    path('addUser/<uid>/<username>', api.addUser)
+    path('addUser/<uid>/<username>', api.addUser),
+    path('changeUsername/<uid>/<username>', api.changeUsername),
+    path('addBlacklist/<dealid>/<uid1>/<uid2>', api.addBlacklist),
+    #<c> is a string of ids of choices separated by commas
+    #eg <1,2,3,4,5>
+    path('addRequest/<uid>/<dealid>/<c>', api.addRequest),
+    path('deleteRequest/<uid>/<dealid>', api.deleteRequest),
+    path('getRequestById/<uid>', api.getRequestById),
 ]
