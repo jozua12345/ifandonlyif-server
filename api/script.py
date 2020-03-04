@@ -6,6 +6,40 @@ django.setup()
 import json
 from deals.models import Deals
 
+def categorySorter(category):
+    categories = []
+    foodKeywords = ["Fast Food, Restaurants, Dining, Groceries", "Wines"]
+    entKeywords = ["Places of Interest, Entertainment, Tourist Attractions, Movies", "Apple, iPhone, MacBook, iPad, iTouch", "Computers, Tablets, Accessories, Software", "Body Fitness Gym", "Digital Cameras, DSLRs", "Games, Consoles, Xbox, Playstation, Nintendo, PC", "Mobile Phones Smartphones, Apple, Samsung, Sony, LG, HTC, Xiaomi etc", "iPhone", "Music, CDs, DVDs, Blu-Ray, Movies, Music CDs, Video Rental", "Singtel, Starhub & M1 Phones, Broadband & Pay TV Offers", "TVs, Speakers, Blu-Ray, Home Theatre, Headphones, Earphones", "Video Camcorders", "Web Hosting (Shared, VPS, Cloud, Dedicated, etc)"]
+    retailKeywords = ["Beauty", "Cosmetics, Make-up, Brushes", "Decoratives, Collectibles", "Department Stores, Online Stores, Online Major Sales Events", "Eye Care & Optical Lens", "Fashion, Branded Apparel, Wallets, Accessories", "Footwear, Shoes, Slippers, Sneakers, Sandals", "Fragrances & Perfumes", "Handbags", "Furniture, Chairs, Sofa Sets, Dining Tables, Interior Designing, etc" "Health Products, Massagers", "Home Appliances, Washers, Fridges, Air Conditioners, Fans, Vacuum Cleaners", "Jewellery, Gold, Diamonds, Silver, Rings, Pendants, Chains, Bangles, Earrings", "Kitchenware, Cutlery, Pans, Cookers, Blenders, Cookware", "Personal Care, Creams, Soap, Shampoo, Toiletries", "Shopping Malls", "Sports, Golf, Accessories", "Warehouse, Clearance, Big Sales", "Watches"]
+
+    for string1 in foodKeywords:
+        if string1 in category:
+            categories.append("Food")
+            break
+
+    for string2 in entKeywords:
+        if string2 in category:
+            categories.append("Entertainment")
+            break
+
+    for string3 in retailKeywords:
+        if string3 in category:
+            categories.append("Retail")
+            break
+    
+    if len(categories) == 0:
+        categories.append("Others")
+
+    count = 0
+    categoriesString = ""
+    for string in categories:
+        if count != 0:
+            categoriesString += ","
+        categoriesString += string
+        count += 1
+    
+    return categoriesString
+
 
 def deEmojify(inputString):
     return inputString.encode('ascii', 'ignore').decode('ascii')
@@ -41,6 +75,7 @@ for item in data:
         terms = ""
     try:
         category = item['category']
+        category = categorySorter(category)
     except KeyError:
         category = ""
 

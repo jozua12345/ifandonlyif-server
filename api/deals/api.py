@@ -8,6 +8,27 @@ def getAllDeals(request):
     serializer = DealsSerializer(queryset, many=True)
     return HttpResponse(json.dumps(serializer.data))
 
+def getFoodDeals(request):
+    queryset = Deals.objects.filter(category__contains='Food')
+    serializer = DealsSerializer(queryset, many=True)
+    print(serializer)
+    return HttpResponse(json.dumps(serializer.data))
+
+def getEntertainmentDeals(request):
+    queryset = Deals.objects.filter(category__contains='Entertainment')
+    serializer = DealsSerializer(queryset, many=True)
+    return HttpResponse(json.dumps(serializer.data))
+
+def getRetailDeals(request):
+    queryset = Deals.objects.filter(category__contains='Retail')
+    serializer = DealsSerializer(queryset, many=True)
+    return HttpResponse(json.dumps(serializer.data))
+
+def getOthersDeals(request):
+    queryset = Deals.objects.filter(category__contains='Others')
+    serializer = DealsSerializer(queryset, many=True)
+    return HttpResponse(json.dumps(serializer.data))
+
 def addUser(request, uid, username):
     clientuser = ClientUsers(uid=uid, name=username)
     try:
