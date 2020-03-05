@@ -89,3 +89,24 @@ def getRequestById(request, uid):
     queryset = Requests.objects.filter(clientuser=clientuser)
     serializer = RequestsSerializer(queryset, many=True)
     return HttpResponse(json.dumps(serializer.data))
+
+def getRequestById(request):
+    queryset = Request.objects.all()
+    queueidRecent = queryset[len(queryset)-1]['id']
+    uidRecent = queryset[len(queryset)-1]['clientuser']
+    dealRecent = queryset[len(queryset)-1]['deal']
+    choicesRecent = queryset[len(queryset)-1]['choices']
+        
+    for i in range(0,len(queryset)-1):
+        if(queryset[i]['deal'] == dealRecent):
+            if(set(choicesRecent) & set(queryset[i]['choices'])):
+                matchDict = {}
+                matchDict['uid1'] = uidRecent
+                matchDict['uid2'] = queryset[i]['clientuser']
+                matchDict['deal'] = dealRecent
+                matchDict['locations'] = list(set(choicesRecent) & set(queryset[i]['choices']))
+                #remove both users from database
+                SomeModel.objects.filter(id=queueidRecent).delete()
+                SomeModel.objects.filter(id=queryset[i]['id']).delete()
+                #send push-notification to both users
+                return matchDict
