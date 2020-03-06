@@ -14,7 +14,6 @@ class Deals(models.Model):
         return self.name
 
 class ClientUsers(models.Model):
-    name = models.CharField(max_length=155)
     uid  = models.CharField(max_length=155)
 
     def __str__(self):

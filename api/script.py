@@ -5,6 +5,14 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'api.settings')
 django.setup()
 import json
 from deals.models import Deals
+from datetime import date
+
+
+def check_expiry(x):
+    now_str = str(date.today())
+    if (x[slice(10)] > now_str):
+        return True
+    return False
 
 def categorySorter(category):
     categories = []
@@ -88,8 +96,14 @@ for item in data:
     print("6. Category: " + category)
     print("===================================")'''
     if(not Deals.objects.all().filter(name=name)):
-        print("Adding")
-        deal = Deals(name=name, start=start, end=end, image=image, vendors=vendor, terms=terms, category=category)
-        deal.save()
+        if(check_expiry(end)):
+            print("Adding")
+            deal = Deals(name=name, start=start, end=end, image=image, vendors=vendor, terms=terms, category=category)
+            deal.save()
+
+    for deal in Deals.objects.all():
+        if(not check_expiry(deal.end)):
+            print("Deleting expired")
+            deal.delete()
     
 print("Success")

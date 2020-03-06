@@ -29,22 +29,14 @@ def getOthersDeals(request):
     serializer = DealsSerializer(queryset, many=True)
     return HttpResponse(json.dumps(serializer.data))
 
-def addUser(request, uid, username):
-    clientuser = ClientUsers(uid=uid, name=username)
+def addUser(request, uid):
+    clientuser = ClientUsers(uid=uid)
     try:
         clientuser.save()
         return HttpResponse('<H1>SUCCESS</H1>')
     except Exception as e:
         return HttpResponse('<H1>%s</H1>' %str(e))
 
-def changeUsername(request, uid, username):
-    clientuser = ClientUsers.objects.get(uid=uid)
-    clientuser.name = username
-    try:
-        clientuser.save()
-        return HttpResponse('<H1>SUCCESS</H1>')
-    except Exception as e:
-        return HttpResponse('<H1>%s</H1>' %str(e))
 
 def addBlacklist(request, dealid, uid1, uid2):
     clientuser1 = ClientUsers.objects.get(uid=uid1)
