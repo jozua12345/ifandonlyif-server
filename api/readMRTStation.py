@@ -1,6 +1,8 @@
-import csv
 import os
 import django
+import pandas as pd
+import io
+import requests
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'api.settings')
 django.setup()
@@ -8,22 +10,25 @@ import json
 from deals.models import Choices
 
 def readMRTStations():
-    MRTStations = []
-    with open('train-station-chinese-names.csv', newline='', encoding = 'utf8') as File:  
-        reader = csv.reader(File)
-        #extract english names of train station
-        for row in reader:
-            MRTStations.append(row[1])
-        #remove header
-        MRTStations.pop(0)
-        #remove duplicates in list
-        MRTStations = list(dict.fromkeys(MRTStations))
-        #sort stations by alphabetical order
-        MRTStations.sort(key=str.lower)
-    return MRTStations
+    mrtStations = []
+    url = 'https://data.gov.sg/dataset/c89bb614-b4ac-4669-8c65-a2e2ea5211a6/download'
+    s = requests.get(url).content
+    ds = pd.read_csv(io.StringIO(s.decode('utf-8','ignore')), sep = '\r')
+    ds = ds.join(ds.pop('PK').str.split(',', expand=True))
+    ds = ds.iloc[57:len(ds)-1]
+    #take the column containing english names of mrt station
+    mrtStations = ds[1]
+    mrtStations = mrtStations.values.tolist()
+    #remove duplicates in list
+    mrtStations = list(dict.fromkeys(mrtStations))
+    #sort stations by alphabetical order, regardless of upper or lower case
+    mrtStations.sort(key=str.lower)
+    return mrtStations
+
 
 mrt = readMRTStations()
 for loc in mrt:
-    choice = Choices(name=loc)
-    choice.save()
+    if(not Choices.objects.all().filter(name=loc)):
+        choice = Choices(name=loc)
+        choice.save()
 print("Success!")

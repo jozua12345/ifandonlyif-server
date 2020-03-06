@@ -8,6 +8,11 @@ def getAllDeals(request):
     serializer = DealsSerializer(queryset, many=True)
     return HttpResponse(json.dumps(serializer.data))
 
+def getAllLocation(request):
+    queryset = Choices.objects.all()
+    serializer =ChoicesSerializer(queryset, many=True)
+    return HttpResponse(json.dumps(serializer.data))
+
 def getFoodDeals(request):
     queryset = Deals.objects.filter(category__contains='Food')
     serializer = DealsSerializer(queryset, many=True)

@@ -24,4 +24,5 @@ urlpatterns = [
     path('addRequest/<uid>/<dealid>/<c>', api.addRequest),
     path('deleteRequest/<uid>/<dealid>', api.deleteRequest),
     path('getRequestById/<uid>', api.getRequestById),
+    path('getAllLocation', api.getAllLocation),
 ]
