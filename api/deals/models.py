@@ -15,6 +15,7 @@ class Deals(models.Model):
 
 class ClientUsers(models.Model):
     uid  = models.CharField(max_length=155)
+    token  = models.CharField(max_length=155)
 
     def __str__(self):
         return self.uid

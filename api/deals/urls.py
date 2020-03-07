@@ -18,6 +18,7 @@ urlpatterns = [
     path('getRetailDeals/', api.getRetailDeals),
     path('getOthersDeals/', api.getOthersDeals),
     path('addUser/<uid>', api.addUser),
+    path('updateToken/<uid>/<token>', api.updateToken),
     path('addBlacklist/<dealid>/<uid1>/<uid2>', api.addBlacklist),
     #<c> is a string of ids of choices separated by commas
     #eg <1,2,3,4,5>

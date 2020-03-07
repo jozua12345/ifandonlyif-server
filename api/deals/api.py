@@ -42,6 +42,15 @@ def addUser(request, uid):
     except Exception as e:
         return HttpResponse('<H1>%s</H1>' %str(e))
 
+def updateToken(request, uid, token):
+    clientuser = ClientUsers.objects.get(uid=uid)
+    clientuser.token = token
+
+    try:
+        clientuser.save()
+        return HttpResponse('<H1>SUCCESS</H1>')
+    except Exception as e:
+        return HttpResponse('<H1>%s</H1>' %str(e))
 
 def addBlacklist(request, dealid, uid1, uid2):
     clientuser1 = ClientUsers.objects.get(uid=uid1)
