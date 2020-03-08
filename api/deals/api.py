@@ -158,3 +158,23 @@ def matchTrigger():
                     #send push-notification to both users
                     return matchDict
                     '''
+
+def matchTrigger2(request):
+    queryset = Requests.objects.all()
+    queueidRecent = queryset[len(queryset)-1]['id']
+    uidRecent = queryset[len(queryset)-1]['clientuser']
+    dealRecent = queryset[len(queryset)-1]['deal']
+    choicesRecent = queryset[len(queryset)-1]['choices']
+        
+    for i in range(0,len(queryset)-1):
+        if(queryset[i]['deal'] == dealRecent):
+            if(set(choicesRecent) & set(queryset[i]['choices'])):
+                clientuser1 = ClientUsers.objects.get(uid=uidRecent)
+                clientuser2 = ClientUsers.objects.get(uid=queryset[i]['clientuser'])
+                deal = Deals.objects.get(dealid=dealRecent)
+                if(not(BlackLists.objects.get(clientuser1=clientuser1, clientuser2=clientuser2, deal=deal) 
+                or BlackLists.objects.get(clientuser1=clientuser2, clientuser2=clientuser1, deal=deal))):
+                    data = {}
+                    data['uid1'] = clientuser1.uid
+                    data['uid2'] = clientuser2.uid
+                    return HttpResponse(json.dumps(data))
