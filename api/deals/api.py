@@ -128,11 +128,11 @@ def matchTrigger():
                 body1.append(json.dumps(ClientUsersSerializer(clientuser1, many=False)))
                 body1.append(json.dumps(ClientUsersSerializer(clientuser2, many=False)))
                 body1.append(json.dumps(DealsSerializer(deal, many=False)))
-                data1['notification'] = {}
-                data1['notification']['title'] = "Found a match!"
-                data1['notification']['body'] = body1
-                data1['notification']['icon'] = "firebase-logo.png"
-                data1['notification']['click_action'] = "http://localhost:8081"
+                data1['data'] = {}
+                data1['data']['title'] = "Found a match!"
+                data1['data']['body'] = body1
+                data1['data']['icon'] = "firebase-logo.png"
+                data1['data']['click_action'] = "http://localhost:8081"
                 data1['to'] = clientuser1.token
 
                 data2 = {}
@@ -140,11 +140,11 @@ def matchTrigger():
                 body2.append(json.dumps(ClientUsersSerializer(clientuser1, many=False)))
                 body2.append(json.dumps(ClientUsersSerializer(clientuser2, many=False)))
                 body2.append(json.dumps(DealsSerializer(deal, many=False)))
-                data2['notification'] = {}
-                data2['notification']['title'] = "Found a match!"
-                data2['notification']['body'] = body2
-                data2['notification']['icon'] = "firebase-logo.png"
-                data2['notification']['click_action'] = "http://localhost:8081"
+                data2['data'] = {}
+                data2['data']['title'] = "Found a match!"
+                data2['data']['body'] = body2
+                data2['data']['icon'] = "firebase-logo.png"
+                data2['data']['click_action'] = "http://localhost:8081"
                 data2['to'] = clientuser2.token
 
                 requests.post(FCM_ENDPOINT, data = json.dumps(data1), headers=headers)
