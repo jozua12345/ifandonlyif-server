@@ -108,13 +108,15 @@ def getRequestById(request, uid):
 
 def matchTrigger():
     queryset = Requests.objects.all()
+    requestRecent = queryset.last()
     queueidRecent = queryset.last().id
     clientuseridRecent = queryset.last().clientuser
     dealRecent = queryset.last().deal
     choicesRecent = queryset.last().choices.values_list('id', flat=True)
 
-    queryset.exclude(id=queueidRecent)
-    queryset.filter(deal=dealRecent)
+    queryset = queryset.exclude(id=queueidRecent)
+    queryset = queryset.exclude(clientuser=clientuseridRecent)
+    queryset = queryset.filter(deal=dealRecent)
 
     for i in queryset:
         if(set(choicesRecent) & set(i.choices.values_list('id', flat=True))):
@@ -148,8 +150,11 @@ def matchTrigger():
                 data2['to'] = clientuser2.token
 
                 result = requests.post(FCM_ENDPOINT, data = json.dumps(data1), headers=headers)
-                print(result)
+                print(json.dumps(data1))
                 requests.post(FCM_ENDPOINT, data = json.dumps(data2), headers=headers)
+                print(json.dumps(data2))
+                requestRecent.delete()
+                i.delete()
                 break
 
 
@@ -160,8 +165,9 @@ def matchTrigger2(request):
     dealRecent = queryset.last().deal
     choicesRecent = queryset.last().choices.values_list('id', flat=True)
 
-    queryset.exclude(id=queueidRecent)
-    queryset.filter(deal=dealRecent)
+    queryset = queryset.exclude(id=queueidRecent)
+    queryset = queryset.exclude(clientuser=clientuseridRecent)
+    queryset = queryset.filter(deal=dealRecent)
 
     for i in queryset:
         if(set(choicesRecent) & set(i.choices.values_list('id', flat=True))):
@@ -174,3 +180,5 @@ def matchTrigger2(request):
                 data['uid1'] = clientuser1.uid
                 data['uid2'] = clientuser2.uid
                 return HttpResponse(json.dumps(data))
+    
+    return HttpResponse({})
