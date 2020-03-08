@@ -144,6 +144,7 @@ def matchTrigger():
 
                     requests.post(FCM_ENDPOINT, data = data1, auth=(FCM_USER, FCM_KEY))
                     requests.post(FCM_ENDPOINT, data = data2, auth=(FCM_USER, FCM_KEY))
+                    break
 
                     '''
                     matchDict = {}
