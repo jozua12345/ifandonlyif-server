@@ -125,9 +125,9 @@ def matchTrigger():
             or BlackLists.objects.filter(clientuser1=clientuser2, clientuser2=clientuser1, deal=deal))):
                 data1 = {}
                 body1 = []
-                body1.append(json.dumps(ClientUsersSerializer(clientuser1, many=False)))
-                body1.append(json.dumps(ClientUsersSerializer(clientuser2, many=False)))
-                body1.append(json.dumps(DealsSerializer(deal, many=False)))
+                body1.append(json.dumps(ClientUsersSerializer(clientuser1, many=False).data))
+                body1.append(json.dumps(ClientUsersSerializer(clientuser2, many=False).data))
+                body1.append(json.dumps(DealsSerializer(deal, many=False).data))
                 data1['data'] = {}
                 data1['data']['title'] = "Found a match!"
                 data1['data']['body'] = body1
@@ -137,9 +137,9 @@ def matchTrigger():
 
                 data2 = {}
                 body2 = []
-                body2.append(json.dumps(ClientUsersSerializer(clientuser1, many=False)))
-                body2.append(json.dumps(ClientUsersSerializer(clientuser2, many=False)))
-                body2.append(json.dumps(DealsSerializer(deal, many=False)))
+                body2.append(json.dumps(ClientUsersSerializer(clientuser1, many=False).data))
+                body2.append(json.dumps(ClientUsersSerializer(clientuser2, many=False).data))
+                body2.append(json.dumps(DealsSerializer(deal, many=False).data))
                 data2['data'] = {}
                 data2['data']['title'] = "Found a match!"
                 data2['data']['body'] = body2
@@ -147,7 +147,8 @@ def matchTrigger():
                 data2['data']['click_action'] = "http://localhost:8081"
                 data2['to'] = clientuser2.token
 
-                requests.post(FCM_ENDPOINT, data = json.dumps(data1), headers=headers)
+                result = requests.post(FCM_ENDPOINT, data = json.dumps(data1), headers=headers)
+                print(result)
                 requests.post(FCM_ENDPOINT, data = json.dumps(data2), headers=headers)
                 break
 
