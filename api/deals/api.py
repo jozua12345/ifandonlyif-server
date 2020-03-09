@@ -126,10 +126,24 @@ def matchTrigger():
             if(not(BlackLists.objects.filter(clientuser1=clientuser1, clientuser2=clientuser2, deal=deal) 
             or BlackLists.objects.filter(clientuser1=clientuser2, clientuser2=clientuser1, deal=deal))):
                 data1 = {}
+                loc = list(set(choicesRecent) & set(i.choices.values_list('id', flat=True)))
+                locstring = ""
+                for l in loc:
+                    locstring += Choices.objects.get(id=l)
+                    locstring += " "
+                '''
                 body1 = []
                 body1.append(json.dumps(ClientUsersSerializer(clientuser1, many=False).data))
                 body1.append(json.dumps(ClientUsersSerializer(clientuser2, many=False).data))
                 body1.append(json.dumps(DealsSerializer(deal, many=False).data))
+                '''
+                body1 = {}
+                body1['uid1'] = clientuser1.uid
+                body1['ui2'] = clientuser2.uid
+                body1['deal'] = deal.name
+                body1['locations'] = locstring
+
+
                 data1['data'] = {}
                 data1['data']['title'] = "Found a match!"
                 data1['data']['body'] = body1
@@ -138,13 +152,9 @@ def matchTrigger():
                 data1['to'] = clientuser1.token
 
                 data2 = {}
-                body2 = []
-                body2.append(json.dumps(ClientUsersSerializer(clientuser1, many=False).data))
-                body2.append(json.dumps(ClientUsersSerializer(clientuser2, many=False).data))
-                body2.append(json.dumps(DealsSerializer(deal, many=False).data))
                 data2['data'] = {}
                 data2['data']['title'] = "Found a match!"
-                data2['data']['body'] = body2
+                data2['data']['body'] = body1
                 data2['data']['icon'] = "firebase-logo.png"
                 data2['data']['click_action'] = "http://localhost:8081"
                 data2['to'] = clientuser2.token
