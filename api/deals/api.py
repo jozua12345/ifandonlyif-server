@@ -129,20 +129,14 @@ def matchTrigger():
                 loc = list(set(choicesRecent) & set(i.choices.values_list('id', flat=True)))
                 locstring = ""
                 for l in loc:
-                    locstring += Choices.objects.get(id=l)
+                    locstring += Choices.objects.get(id=l).name
                     locstring += " "
-                '''
-                body1 = []
-                body1.append(json.dumps(ClientUsersSerializer(clientuser1, many=False).data))
-                body1.append(json.dumps(ClientUsersSerializer(clientuser2, many=False).data))
-                body1.append(json.dumps(DealsSerializer(deal, many=False).data))
-                '''
-                body1 = {}
-                body1['uid1'] = clientuser1.uid
-                body1['ui2'] = clientuser2.uid
-                body1['deal'] = deal.name
-                body1['locations'] = locstring
 
+                body1 = {}
+                body1['user1'] = json.dumps(ClientUsersSerializer(clientuser1, many=False).data)
+                body1['user2'] = json.dumps(ClientUsersSerializer(clientuser2, many=False).data)
+                body1['deal'] = json.dumps(DealsSerializer(deal, many=False).data)
+                body1['locations'] = locstring
 
                 data1['data'] = {}
                 data1['data']['title'] = "Found a match!"
