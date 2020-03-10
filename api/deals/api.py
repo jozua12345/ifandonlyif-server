@@ -164,6 +164,7 @@ def matchTrigger():
 
 def matchTrigger2(request):
     queryset = Requests.objects.all()
+    requestRecent = queryset.last()
     queueidRecent = queryset.last().id
     clientuseridRecent = queryset.last().clientuser
     dealRecent = queryset.last().deal
@@ -183,6 +184,8 @@ def matchTrigger2(request):
                 data = {}
                 data['uid1'] = clientuser1.uid
                 data['uid2'] = clientuser2.uid
+                requestRecent.delete()
+                i.delete()
                 return HttpResponse(json.dumps(data))
     
     return HttpResponse({})
