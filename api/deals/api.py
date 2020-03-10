@@ -203,4 +203,4 @@ def matchTrigger2(request):
                 i.delete()
                 return HttpResponse(json.dumps(data))
     
-    return HttpResponse({'uid1': '', 'uid2': ''})
+    return HttpResponse(json.dumps({'uid1': '', 'uid2': ''}))
