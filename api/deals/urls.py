@@ -23,6 +23,7 @@ urlpatterns = [
     #<c> is a string of ids of choices separated by commas
     #eg <1,2,3,4,5>
     path('addRequest/<uid>/<dealid>/<c>', api.addRequest),
+    path('addRequest2/<uid>/<dealid>/<c>', api.addRequest2),
     path('deleteRequest/<uid>/<dealid>', api.deleteRequest),
     path('getRequestById/<uid>', api.getRequestById),
     path('getAllLocation', api.getAllLocation),

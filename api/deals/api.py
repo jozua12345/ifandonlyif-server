@@ -89,6 +89,21 @@ def addRequest(request, uid, dealid, c):
     except Exception as e:
         return HttpResponse('<H1>%s</H1>' %str(e))
 
+def addRequest2(request, uid, dealid, c):
+    clientuser = ClientUsers.objects.get(uid=uid)
+    deal = Deals.objects.get(pk=int(dealid))
+    request = Requests(clientuser=clientuser, deal=deal)
+
+    try:
+        request.save()
+        l = c.split(',')
+        for i in l:
+            choice = Choices.objects.get(pk=int(i))
+            request.choices.add(choice)
+        return HttpResponse('<H1>SUCCESS</H1>')
+    except Exception as e:
+        return HttpResponse('<H1>%s</H1>' %str(e))
+
 def deleteRequest(request, uid, dealid):
     clientuser = ClientUsers.objects.get(uid=uid)
     deal = Deals.objects.get(pk=int(dealid))
@@ -188,4 +203,4 @@ def matchTrigger2(request):
                 i.delete()
                 return HttpResponse(json.dumps(data))
     
-    return HttpResponse({})
+    return HttpResponse({'uid1': '', 'uid2': ''})
