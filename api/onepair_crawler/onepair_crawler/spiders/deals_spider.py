@@ -14,7 +14,7 @@ class DealsSpider(scrapy.Spider):
     CUSTOM_PROXY = '218.75.109.86'
 
     def start_requests(self):
-        for url in start_urls:
+        for url in self.start_urls:
             request = scrapy.Request(url, callback=self.parse)
             request.meta['proxy'] = self.CUSTOM_PROXY
             yield request
