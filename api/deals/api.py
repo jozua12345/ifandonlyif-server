@@ -3,7 +3,7 @@ import requests
 from django.http import HttpResponse
 from .models import Deals, ClientUsers, BlackLists, Choices, Requests
 from .serializers import DealsSerializer, BlackListsSerializer, ClientUsersSerializer, ChoicesSerializer, RequestsSerializer
-
+from .Semaphore import lock
 
 FCM_ENDPOINT = 'https://fcm.googleapis.com/fcm/send'
 headers = {
@@ -77,6 +77,7 @@ def addRequest(request, uid, dealid, c):
     clientuser = ClientUsers.objects.get(uid=uid)
     deal = Deals.objects.get(pk=int(dealid))
     request = Requests(clientuser=clientuser, deal=deal)
+    global lock
 
     try:
         request.save()
@@ -84,7 +85,11 @@ def addRequest(request, uid, dealid, c):
         for i in l:
             choice = Choices.objects.get(pk=int(i))
             request.choices.add(choice)
+        while(lock):
+            pass
+        lock = True
         matchTrigger()
+        lock = False
         return HttpResponse('<H1>SUCCESS</H1>')
     except Exception as e:
         return HttpResponse('<H1>%s</H1>' %str(e))
