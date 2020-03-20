@@ -94,21 +94,6 @@ def addRequest(request, uid, dealid, c):
     except Exception as e:
         return HttpResponse('<H1>%s</H1>' %str(e))
 
-def addRequest2(request, uid, dealid, c):
-    clientuser = ClientUsers.objects.get(uid=uid)
-    deal = Deals.objects.get(pk=int(dealid))
-    request = Requests(clientuser=clientuser, deal=deal)
-
-    try:
-        request.save()
-        l = c.split(',')
-        for i in l:
-            choice = Choices.objects.get(pk=int(i))
-            request.choices.add(choice)
-        return HttpResponse('<H1>SUCCESS</H1>')
-    except Exception as e:
-        return HttpResponse('<H1>%s</H1>' %str(e))
-
 def deleteRequest(request, uid, dealid):
     clientuser = ClientUsers.objects.get(uid=uid)
     deal = Deals.objects.get(pk=int(dealid))
@@ -143,8 +128,8 @@ def matchTrigger():
             clientuser1 = clientuseridRecent
             clientuser2 = i.clientuser
             deal = dealRecent
-            if(not(BlackLists.objects.filter(clientuser1=clientuser1, clientuser2=clientuser2, deal=deal) 
-            or BlackLists.objects.filter(clientuser1=clientuser2, clientuser2=clientuser1, deal=deal))):
+            if(not(BlackLists.objects.filter(clientuser1=clientuser1, clientuser2=clientuser2) 
+            or BlackLists.objects.filter(clientuser1=clientuser2, clientuser2=clientuser1))):
                 data1 = {}
                 loc = list(set(choicesRecent) & set(i.choices.values_list('id', flat=True)))
                 locstring = ""
@@ -182,30 +167,3 @@ def matchTrigger():
                 break
 
 
-def matchTrigger2(request):
-    queryset = Requests.objects.all()
-    requestRecent = queryset.last()
-    queueidRecent = queryset.last().id
-    clientuseridRecent = queryset.last().clientuser
-    dealRecent = queryset.last().deal
-    choicesRecent = queryset.last().choices.values_list('id', flat=True)
-
-    queryset = queryset.exclude(id=queueidRecent)
-    queryset = queryset.exclude(clientuser=clientuseridRecent)
-    queryset = queryset.filter(deal=dealRecent)
-
-    for i in queryset:
-        if(set(choicesRecent) & set(i.choices.values_list('id', flat=True))):
-            clientuser1 = clientuseridRecent
-            clientuser2 = i.clientuser
-            deal = dealRecent
-            if(not(BlackLists.objects.filter(clientuser1=clientuser1, clientuser2=clientuser2, deal=deal) 
-            or BlackLists.objects.filter(clientuser1=clientuser2, clientuser2=clientuser1, deal=deal))):
-                data = {}
-                data['uid1'] = clientuser1.uid
-                data['uid2'] = clientuser2.uid
-                requestRecent.delete()
-                i.delete()
-                return HttpResponse(json.dumps(data))
-    
-    return HttpResponse(json.dumps({'uid1': '', 'uid2': ''}))
