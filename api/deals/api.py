@@ -60,15 +60,23 @@ def updateToken(request, uid, token):
     except Exception as e:
         return HttpResponse('<H1>%s</H1>' %str(e))
 
-def addBlacklist(request, dealid, uid1, uid2):
+def addBlacklist(request, uid1, uid2):
     clientuser1 = ClientUsers.objects.get(uid=uid1)
     clientuser2 = ClientUsers.objects.get(uid=uid2)
-    pid = int(dealid)
-    deal = Deals.objects.get(pk=pid)
-    blacklist = BlackLists(clientuser2=clientuser2, clientuser1=clientuser1, deal=deal)
+    blacklist = BlackLists(clientuser2=clientuser2, clientuser1=clientuser1)
 
     try:
         blacklist.save()
+        return HttpResponse('<H1>SUCCESS</H1>')
+    except Exception as e:
+        return HttpResponse('<H1>%s</H1>' %str(e))
+
+def deleteBlacklistAll(request):
+    blacklist = BlackLists.objects.all()
+
+
+    try:
+        blacklist.delete()
         return HttpResponse('<H1>SUCCESS</H1>')
     except Exception as e:
         return HttpResponse('<H1>%s</H1>' %str(e))
