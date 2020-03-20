@@ -19,13 +19,12 @@ urlpatterns = [
     path('getOthersDeals/', api.getOthersDeals),
     path('addUser/<uid>', api.addUser),
     path('updateToken/<uid>/<token>', api.updateToken),
-    path('addBlacklist/<dealid>/<uid1>/<uid2>', api.addBlacklist),
+    path('addBlacklist/<uid1>/<uid2>', api.addBlacklist),
     #<c> is a string of ids of choices separated by commas
     #eg <1,2,3,4,5>
     path('addRequest/<uid>/<dealid>/<c>', api.addRequest),
-    path('addRequest2/<uid>/<dealid>/<c>', api.addRequest2),
     path('deleteRequest/<uid>/<dealid>', api.deleteRequest),
     path('getRequestById/<uid>', api.getRequestById),
     path('getAllLocation', api.getAllLocation),
-    path('matchTrigger2', api.matchTrigger2),
+    path('deleteBlacklistAll', api.deleteBlacklistAll),
 ]
