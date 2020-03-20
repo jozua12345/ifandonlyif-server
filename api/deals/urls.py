@@ -26,4 +26,5 @@ urlpatterns = [
     path('deleteRequest/<uid>/<dealid>', api.deleteRequest),
     path('getRequestById/<uid>', api.getRequestById),
     path('getAllLocation', api.getAllLocation),
+    path('deleteBlacklistAll', api.deleteBlacklistAll),
 ]
