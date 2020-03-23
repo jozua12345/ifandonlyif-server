@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from .models import Deals, ClientUsers, BlackLists, Choices, Requests
 from .serializers import DealsSerializer, BlackListsSerializer, ClientUsersSerializer, ChoicesSerializer, RequestsSerializer
 from threading import *
+from .Semaphore import lock
 
 
 
@@ -120,9 +121,8 @@ def getRequestById(request, uid):
 
 def matchTrigger():
     global lock
-    while(lock):
-        pass
-    lock = True
+    while(lock.acquire(False)):
+        lock.acquire()
     queryset = Requests.objects.all()
     requestRecent = queryset.last()
     queueidRecent = queryset.last().id
@@ -176,5 +176,5 @@ def matchTrigger():
                 requestRecent.delete()
                 i.delete()
                 break
-    lock = False
+    lock.release()
 

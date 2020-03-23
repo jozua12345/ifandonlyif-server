@@ -1,3 +1,3 @@
 from threading import *
 
-locks = False
+lock = Lock()
