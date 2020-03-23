@@ -92,7 +92,8 @@ def addRequest(request, uid, dealid, c):
         for i in l:
             choice = Choices.objects.get(pk=int(i))
             request.choices.add(choice)
-        threading.Thread(target = matchTrigger)
+        t = threading.Thread(target = matchTrigger)
+        t.start()
         return HttpResponse('<H1>SUCCESS</H1>')
     except Exception as e:
         return HttpResponse('<H1>%s</H1>' %str(e))
