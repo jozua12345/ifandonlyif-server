@@ -86,7 +86,7 @@ def addRequest(request, uid, dealid, c):
     deal = Deals.objects.get(pk=int(dealid))
     request = Requests(clientuser=clientuser, deal=deal)
     global lock
-
+    print(lock)
     try:
         request.save()
         l = c.split(',')
