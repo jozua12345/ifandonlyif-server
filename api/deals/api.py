@@ -121,7 +121,7 @@ def getRequestById(request, uid):
 
 def matchTrigger():
     global lock
-    while(lock.acquire(False)):
+    while(lock.locked()):
         lock.acquire()
     queryset = Requests.objects.all()
     requestRecent = queryset.last()
