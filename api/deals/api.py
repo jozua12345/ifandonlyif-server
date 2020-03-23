@@ -3,7 +3,8 @@ import requests
 from django.http import HttpResponse
 from .models import Deals, ClientUsers, BlackLists, Choices, Requests
 from .serializers import DealsSerializer, BlackListsSerializer, ClientUsersSerializer, ChoicesSerializer, RequestsSerializer
-from .Semaphore import lock
+from django.db import transaction
+
 
 FCM_ENDPOINT = 'https://fcm.googleapis.com/fcm/send'
 headers = {
@@ -85,7 +86,6 @@ def addRequest(request, uid, dealid, c):
     clientuser = ClientUsers.objects.get(uid=uid)
     deal = Deals.objects.get(pk=int(dealid))
     request = Requests(clientuser=clientuser, deal=deal)
-    global lock
     try:
         request.save()
         l = c.split(',')
@@ -115,58 +115,60 @@ def getRequestById(request, uid):
 
 
 def matchTrigger():
-    queryset = Requests.objects.all()
-    requestRecent = queryset.last()
-    queueidRecent = queryset.last().id
-    clientuseridRecent = queryset.last().clientuser
-    dealRecent = queryset.last().deal
-    choicesRecent = queryset.last().choices.values_list('id', flat=True)
+    with transaction.atomic():
 
-    queryset = queryset.exclude(id=queueidRecent)
-    queryset = queryset.exclude(clientuser=clientuseridRecent)
-    queryset = queryset.filter(deal=dealRecent)
+        queryset = Requests.objects.all()
+        requestRecent = queryset.last()
+        queueidRecent = queryset.last().id
+        clientuseridRecent = queryset.last().clientuser
+        dealRecent = queryset.last().deal
+        choicesRecent = queryset.last().choices.values_list('id', flat=True)
 
-    for i in queryset:
-        if(set(choicesRecent) & set(i.choices.values_list('id', flat=True))):
-            clientuser1 = clientuseridRecent
-            clientuser2 = i.clientuser
-            deal = dealRecent
-            if(not(BlackLists.objects.filter(clientuser1=clientuser1, clientuser2=clientuser2) 
-            or BlackLists.objects.filter(clientuser1=clientuser2, clientuser2=clientuser1))):
-                data1 = {}
-                loc = list(set(choicesRecent) & set(i.choices.values_list('id', flat=True)))
-                locstring = ""
-                for l in loc:
-                    locstring += Choices.objects.get(id=l).name
-                    locstring += " "
+        queryset = queryset.exclude(id=queueidRecent)
+        queryset = queryset.exclude(clientuser=clientuseridRecent)
+        queryset = queryset.filter(deal=dealRecent)
 
-                body1 = {}
-                body1['user1'] = json.dumps(ClientUsersSerializer(clientuser1, many=False).data)
-                body1['user2'] = json.dumps(ClientUsersSerializer(clientuser2, many=False).data)
-                body1['deal'] = json.dumps(DealsSerializer(deal, many=False).data)
-                body1['locations'] = locstring
+        for i in queryset:
+            if(set(choicesRecent) & set(i.choices.values_list('id', flat=True))):
+                clientuser1 = clientuseridRecent
+                clientuser2 = i.clientuser
+                deal = dealRecent
+                if(not(BlackLists.objects.filter(clientuser1=clientuser1, clientuser2=clientuser2) 
+                or BlackLists.objects.filter(clientuser1=clientuser2, clientuser2=clientuser1))):
+                    data1 = {}
+                    loc = list(set(choicesRecent) & set(i.choices.values_list('id', flat=True)))
+                    locstring = ""
+                    for l in loc:
+                        locstring += Choices.objects.get(id=l).name
+                        locstring += " "
 
-                data1['data'] = {}
-                data1['data']['title'] = "Found a match!"
-                data1['data']['body'] = body1
-                data1['data']['icon'] = "firebase-logo.png"
-                data1['data']['click_action'] = "http://localhost:8081"
-                data1['to'] = clientuser1.token
+                    body1 = {}
+                    body1['user1'] = json.dumps(ClientUsersSerializer(clientuser1, many=False).data)
+                    body1['user2'] = json.dumps(ClientUsersSerializer(clientuser2, many=False).data)
+                    body1['deal'] = json.dumps(DealsSerializer(deal, many=False).data)
+                    body1['locations'] = locstring
 
-                data2 = {}
-                data2['data'] = {}
-                data2['data']['title'] = "Found a match!"
-                data2['data']['body'] = body1
-                data2['data']['icon'] = "firebase-logo.png"
-                data2['data']['click_action'] = "http://localhost:8081"
-                data2['to'] = clientuser2.token
+                    data1['data'] = {}
+                    data1['data']['title'] = "Found a match!"
+                    data1['data']['body'] = body1
+                    data1['data']['icon'] = "firebase-logo.png"
+                    data1['data']['click_action'] = "http://localhost:8081"
+                    data1['to'] = clientuser1.token
 
-                result = requests.post(FCM_ENDPOINT, data = json.dumps(data1), headers=headers)
-                print(json.dumps(data1))
-                requests.post(FCM_ENDPOINT, data = json.dumps(data2), headers=headers)
-                print(json.dumps(data2))
-                requestRecent.delete()
-                i.delete()
-                break
+                    data2 = {}
+                    data2['data'] = {}
+                    data2['data']['title'] = "Found a match!"
+                    data2['data']['body'] = body1
+                    data2['data']['icon'] = "firebase-logo.png"
+                    data2['data']['click_action'] = "http://localhost:8081"
+                    data2['to'] = clientuser2.token
+
+                    result = requests.post(FCM_ENDPOINT, data = json.dumps(data1), headers=headers)
+                    print(json.dumps(data1))
+                    requests.post(FCM_ENDPOINT, data = json.dumps(data2), headers=headers)
+                    print(json.dumps(data2))
+                    requestRecent.delete()
+                    i.delete()
+                    break
 
 
