@@ -5,6 +5,7 @@ from .models import Deals, ClientUsers, BlackLists, Choices, Requests
 from .serializers import DealsSerializer, BlackListsSerializer, ClientUsersSerializer, ChoicesSerializer, RequestsSerializer
 from threading import *
 from .Semaphore import lock
+from lock_tokens.models import LockableModel
 
 
 
@@ -121,8 +122,8 @@ def getRequestById(request, uid):
 
 def matchTrigger():
     global lock
-    while(lock.locked()):
-        pass
+    #while(lock.locked()):
+    #    pass
     lock.acquire()
     queryset = Requests.objects.all()
     requestRecent = queryset.last()

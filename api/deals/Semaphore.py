@@ -1,3 +1,3 @@
 from threading import *
 
-lock = Lock()
+lock = BoundedSemaphore(2)
