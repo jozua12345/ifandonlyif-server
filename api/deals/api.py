@@ -98,6 +98,10 @@ def addRequest(request, uid, dealid, c):
         matchTrigger()
         lock = False
         return HttpResponse('<H1>SUCCESS</H1>')
+    except TimeoutError as e:
+        matchTrigger()
+        lock = False
+        return HttpResponse('<H1>SUCCESS</H1>')
     except Exception as e:
         return HttpResponse('<H1>%s</H1>' %str(e))
 
