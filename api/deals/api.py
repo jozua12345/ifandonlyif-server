@@ -92,8 +92,7 @@ def addRequest(request, uid, dealid, c):
         for i in l:
             choice = Choices.objects.get(pk=int(i))
             request.choices.add(choice)
-        t = threading.Thread(target = matchTrigger)
-        t.start()
+        matchTrigger()
         return HttpResponse('<H1>SUCCESS</H1>')
     except Exception as e:
         return HttpResponse('<H1>%s</H1>' %str(e))
@@ -116,13 +115,6 @@ def getRequestById(request, uid):
 
 
 def matchTrigger():
-    global lock
-    counter = 5000
-    while(lock):
-            if(counter < 0):
-                break
-            pass
-    lock = True
     queryset = Requests.objects.all()
     requestRecent = queryset.last()
     queueidRecent = queryset.last().id
@@ -176,6 +168,5 @@ def matchTrigger():
                 requestRecent.delete()
                 i.delete()
                 break
-    lock = False
 
 
