@@ -117,7 +117,7 @@ def getRequestById(request, uid):
 def matchTrigger():
     with transaction.atomic():
 
-        queryset = Requests.objects.all()
+        queryset = Requests.objects.select_for_update().all()
         requestRecent = queryset.last()
         queueidRecent = queryset.last().id
         clientuseridRecent = queryset.last().clientuser
