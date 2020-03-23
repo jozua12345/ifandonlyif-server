@@ -93,8 +93,9 @@ def addRequest(request, uid, dealid, c):
         for i in l:
             choice = Choices.objects.get(pk=int(i))
             request.choices.add(choice)
-        t = Thread(target=matchTrigger)
-        t.start()
+        #t = Thread(target=matchTrigger)
+        #t.start()
+        matchTrigger()
         return HttpResponse('<H1>SUCCESS</H1>')
     except Exception as e:
         return HttpResponse('<H1>%s</H1>' %str(e))
@@ -117,11 +118,11 @@ def getRequestById(request, uid):
 
 
 def matchTrigger():
-    global lock
-    while(lock):
-        pass
-    lock = True
-    queryset = Requests.objects.all()
+    #global lock
+    #while(lock):
+    #    pass
+    #lock = True
+    queryset = Requests.objects.select_for_update().all()
     requestRecent = queryset.last()
     queueidRecent = queryset.last().id
     clientuseridRecent = queryset.last().clientuser
