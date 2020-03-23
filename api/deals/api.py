@@ -4,7 +4,6 @@ from django.http import HttpResponse
 from .models import Deals, ClientUsers, BlackLists, Choices, Requests
 from .serializers import DealsSerializer, BlackListsSerializer, ClientUsersSerializer, ChoicesSerializer, RequestsSerializer
 from threading import *
-from lock_tokens.models import LockableModel
 
 
 
