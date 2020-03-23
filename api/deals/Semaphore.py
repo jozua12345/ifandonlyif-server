@@ -1,1 +1,3 @@
-lock = False
+from threading import *
+
+locks = False
