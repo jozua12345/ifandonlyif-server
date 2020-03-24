@@ -11,13 +11,6 @@ class DealsSpider(scrapy.Spider):
         'https://singpromos.com/tag/1-for-1/'
     ]
 
-    CUSTOM_PROXY = 'http://218.75.109.86:8080'
-
-    def start_requests(self):
-        for url in self.start_urls:
-            request = scrapy.Request(url, callback=self.parse)
-            request.meta['proxy'] = self.CUSTOM_PROXY
-            yield request
 
     def parse(self, response):
         count = 0
