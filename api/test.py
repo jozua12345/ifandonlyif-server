@@ -8,7 +8,5 @@ from deals.models import Requests, ClientUsers
 from datetime import date
 
 
-queryset = Requests.objects.all()
-queryset.delete()
-queryset2 = ClientUsers.objects.all()
-queryset2.delete()
+clientuser = ClientUsers.objects.get(uid='ShxycWR07JRzaY6FZ6qKZXmeR8d2')
+clientuser.delete()
